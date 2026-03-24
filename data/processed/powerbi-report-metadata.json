@@ -1,0 +1,137 @@
+{
+  "generatedAt": "2026-03-17T21:47:38.525Z",
+  "source": "ENARGAS Power BI public report",
+  "resourceKey": "948aa3aa-1c05-4cc3-b68c-6dd65a53c694",
+  "model": {
+    "id": 11730893,
+    "name": "PowerBICompanionModelResource",
+    "displayName": "PRESENTACIÓN WEB - Flujo de gas  + reversion 2025_ArcGIS_v2",
+    "lastRefreshTime": "2025-12-01T14:29:45.757"
+  },
+  "availableDates": 1369,
+  "latestDate": "2025-09-30",
+  "visuals": [
+    {
+      "id": 14359533600,
+      "visualType": "slicer"
+    },
+    {
+      "id": 14359533601,
+      "visualType": "lineChart"
+    },
+    {
+      "id": 14359533602,
+      "visualType": "textbox"
+    },
+    {
+      "id": 14359533603,
+      "visualType": "slicer"
+    },
+    {
+      "id": 14359533604,
+      "visualType": "slicer"
+    },
+    {
+      "id": 14359533605,
+      "visualType": "card"
+    },
+    {
+      "id": 14359533606,
+      "visualType": "slicer"
+    },
+    {
+      "id": 14484491595,
+      "visualType": "esriVisual"
+    }
+  ],
+  "entities": [
+    {
+      "name": "DateTableTemplate_51b60220-4ff6-4b78-8fcc-8ed597f3c316",
+      "columns": [
+        "Date",
+        "Year",
+        "MonthNo",
+        "Month",
+        "QuarterNo",
+        "Quarter",
+        "Day"
+      ]
+    },
+    {
+      "name": "Fechas",
+      "columns": [
+        "Fecha",
+        "Mes",
+        "Año",
+        "Mes2"
+      ]
+    },
+    {
+      "name": "LocalDateTable_a09723ea-b100-464d-87e5-8b6a0dec6052",
+      "columns": [
+        "Date",
+        "Year",
+        "MonthNo",
+        "Month",
+        "QuarterNo",
+        "Quarter",
+        "Day"
+      ]
+    },
+    {
+      "name": "Flujos",
+      "columns": [
+        "Ruta",
+        "Fecha",
+        "Column",
+        "Mes",
+        "DiasMes",
+        "Column 2",
+        "F-CF",
+        "Caudal",
+        "Flujo-ContrFlujo",
+        "Caudal Promedio",
+        "Column average per Mes2",
+        "Mensual",
+        "Promedio2",
+        "Suma"
+      ]
+    },
+    {
+      "name": "BaseRutas",
+      "columns": [
+        "Ruta",
+        "Origen",
+        "Gasoducto",
+        "Destino",
+        "Latitud Origen",
+        "Longitud Origen",
+        "Latitud Destino",
+        "Longitud Destino",
+        "Orden",
+        "Índice",
+        "List of Ruta values",
+        "DisplayTitle",
+        "mediRUTA"
+      ]
+    },
+    {
+      "name": "Capacidad",
+      "columns": [
+        "Ruta",
+        "Fecha",
+        "Capacidad"
+      ]
+    },
+    {
+      "name": "Orden",
+      "columns": [
+        "N",
+        "Ruta",
+        "Gasoducto",
+        "Ruta Orden",
+        "Índice"
+      ]
+    }
+  ]
+}

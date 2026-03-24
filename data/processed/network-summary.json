@@ -1,0 +1,196 @@
+{
+  "generatedAt": "2026-03-17T21:43:03.217Z",
+  "source": "ENARGAS ArcGIS public services",
+  "stats": {
+    "gasoductos": 1832,
+    "plantasCompresoras": 59,
+    "gasoductosConPresion": 1832,
+    "plantasConCaudalDisponible": 59
+  },
+  "topLicenciatarias": [
+    {
+      "name": "40001",
+      "count": 1027
+    },
+    {
+      "name": "40004",
+      "count": 416
+    },
+    {
+      "name": "10001",
+      "count": 193
+    },
+    {
+      "name": "10002",
+      "count": 127
+    },
+    {
+      "name": "40005",
+      "count": 58
+    },
+    {
+      "name": "42001",
+      "count": 5
+    },
+    {
+      "name": "40003",
+      "count": 4
+    },
+    {
+      "name": "40002",
+      "count": 2
+    }
+  ],
+  "topGasoductos": [
+    {
+      "name": "40001001",
+      "count": 1027
+    },
+    {
+      "name": "40004001",
+      "count": 416
+    },
+    {
+      "name": "10001007",
+      "count": 67
+    },
+    {
+      "name": "40005001",
+      "count": 58
+    },
+    {
+      "name": "10001006",
+      "count": 28
+    },
+    {
+      "name": "10002010",
+      "count": 27
+    },
+    {
+      "name": "10001015",
+      "count": 24
+    },
+    {
+      "name": "10002011",
+      "count": 20
+    },
+    {
+      "name": "10001013",
+      "count": 17
+    },
+    {
+      "name": "10002012",
+      "count": 16
+    },
+    {
+      "name": "10001010",
+      "count": 14
+    },
+    {
+      "name": "10001014",
+      "count": 10
+    },
+    {
+      "name": "10001004",
+      "count": 9
+    },
+    {
+      "name": "10001008",
+      "count": 8
+    },
+    {
+      "name": "10002001",
+      "count": 8
+    }
+  ],
+  "plantasPorEstado": [
+    {
+      "name": "0",
+      "count": 31
+    },
+    {
+      "name": " ",
+      "count": 24
+    },
+    {
+      "name": "Finalizada",
+      "count": 3
+    },
+    {
+      "name": "Sin dato",
+      "count": 1
+    }
+  ],
+  "plantasConMayorCaudalDisponible": [
+    {
+      "nombre": 10001024,
+      "gasoducto": 10001006,
+      "tramo": 10001006002,
+      "licenciataria": 10001,
+      "caudalDisponible": 37019624.4075
+    },
+    {
+      "nombre": 10001023,
+      "gasoducto": 10001006,
+      "tramo": 10001006004,
+      "licenciataria": 10001,
+      "caudalDisponible": 35209014.082
+    },
+    {
+      "nombre": 10001022,
+      "gasoducto": 10001006,
+      "tramo": 10001006004,
+      "licenciataria": 10001,
+      "caudalDisponible": 34989894.8963
+    },
+    {
+      "nombre": 10001008,
+      "gasoducto": 10001014,
+      "tramo": 10001014005,
+      "licenciataria": 10001,
+      "caudalDisponible": 31933518.3871
+    },
+    {
+      "nombre": 10001002,
+      "gasoducto": 10001014,
+      "tramo": 10001014007,
+      "licenciataria": 10001,
+      "caudalDisponible": 30126449.328
+    },
+    {
+      "nombre": 10001029,
+      "gasoducto": 10001006,
+      "tramo": 10001006016,
+      "licenciataria": 10001,
+      "caudalDisponible": 29940435.2458
+    },
+    {
+      "nombre": 10001021,
+      "gasoducto": 10001006,
+      "tramo": 10001006006,
+      "licenciataria": 10001,
+      "caudalDisponible": 29760800.3988
+    },
+    {
+      "nombre": 10001001,
+      "gasoducto": 10001014,
+      "tramo": 10001014009,
+      "licenciataria": 10001,
+      "caudalDisponible": 29714641.3172
+    },
+    {
+      "nombre": 10001028,
+      "gasoducto": 10001006,
+      "tramo": 10001006016,
+      "licenciataria": 10001,
+      "caudalDisponible": 29684886.9224
+    },
+    {
+      "nombre": 10001019,
+      "gasoducto": 10001006,
+      "tramo": 10001006008,
+      "licenciataria": 10001,
+      "caudalDisponible": 29624256.6854
+    }
+  ]
+}
