@@ -106,6 +106,7 @@ const MIN_SCALE = 1;
 const MAX_SCALE = 5;
 const INITIAL_TRANSFORM: Transform = { scale: 1, x: 0, y: 0 };
 const TIMELINE_AUTOPLAY_MS = 1400;
+const HAS_ANY_NODE_METRICS = dataset.snapshots.some((snapshot) => snapshot.nodeMetrics.length > 0);
 
 function formatNumber(value: number | null, digits = 2) {
   if (value == null || Number.isNaN(value)) return "Sin dato";
@@ -236,6 +237,7 @@ export default function App() {
     () => dataset.snapshots.find((snapshot) => snapshot.date === selectedDate) ?? dataset.snapshots.at(-1)!,
     [selectedDate]
   );
+  const hasNodeData = selectedSnapshot.nodeMetrics.length > 0;
 
   const routeMetrics = useMemo(
     () => new Map(selectedSnapshot.metrics.map((metric) => [metric.edgeId, metric])),
@@ -321,6 +323,34 @@ export default function App() {
   const highStressCount = useMemo(
     () => datedRoutes.filter((route) => (route.utilization ?? 0) >= 0.8).length,
     [datedRoutes]
+  );
+
+  const sourceBreakdown = useMemo(
+    () => [
+      { label: "Convencional", value: selectedSnapshot.stats.totalConvSource, accent: "#6b8e23" },
+      { label: "No convencional", value: selectedSnapshot.stats.totalNcSource, accent: "#38b6e8" },
+      { label: "Bolivia", value: selectedSnapshot.stats.totalBoliviaSource, accent: "#f0d080" },
+      { label: "GNL", value: selectedSnapshot.stats.totalLngSource, accent: "#4c78a8" },
+    ],
+    [selectedSnapshot]
+  );
+
+  const topSources = useMemo(
+    () =>
+      [...selectedSnapshot.nodeMetrics]
+        .filter((item) => (item.sourceProxy ?? 0) > 0)
+        .sort((a, b) => (b.sourceProxy ?? 0) - (a.sourceProxy ?? 0))
+        .slice(0, 6),
+    [selectedSnapshot]
+  );
+
+  const topSinks = useMemo(
+    () =>
+      [...selectedSnapshot.nodeMetrics]
+        .filter((item) => (item.sinkProxy ?? 0) > 0)
+        .sort((a, b) => (b.sinkProxy ?? 0) - (a.sinkProxy ?? 0))
+        .slice(0, 6),
+    [selectedSnapshot]
   );
 
   const timelineMarks = useMemo(
@@ -411,11 +441,11 @@ export default function App() {
       <header className="top-shell">
         <section className="hero-bar">
           <div className="control-copy">
-            <p className="eyebrow">GCIE Network Viewer</p>
+            <p className="eyebrow">Sistema De Transporte De Gas En Argentina</p>
             <h1>Mapa operativo de gasoductos y fuentes</h1>
             <p className="lede">
-              Snapshot canonico exportado desde GCIE. Mantiene la lectura de tramos de pruebacodex y suma
-              bubbles de oferta, demanda y breakdown de fuentes.
+              Visualizacion publica de la red de transporte de gas. Muestra el trazado de los gasoductos, el
+              flujo mensual por tramo y, cuando estan disponibles, capas nodales de oferta y demanda.
             </p>
           </div>
           <div className="hero-stats">
@@ -450,23 +480,25 @@ export default function App() {
             <div>
               <h2>Red proyectada</h2>
               <p>
-                Corte {formatMonthLabel(selectedDate)}. Actividad por tramo, bubbles por nodo y capas de fuente conmutables.
+                Corte {formatMonthLabel(selectedDate)}. Actividad por tramo y, cuando existen datos nodales,
+                burbujas de oferta, demanda y origen del gas.
               </p>
             </div>
             <div className="panel-badges">
               <span className="panel-badge">EPSG:3857</span>
               <span className="panel-badge">{formatMonthLabel(selectedDate)}</span>
+              {!hasNodeData ? <span className="panel-badge">Sin datos nodales</span> : null}
             </div>
           </div>
 
           <div className="timeline-presets" style={{ margin: "10px 18px 0", flexWrap: "wrap" }}>
-            <button type="button" className={showSource ? "is-active" : ""} onClick={() => setShowSource((v) => !v)}>Source</button>
-            <button type="button" className={showConv ? "is-active" : ""} onClick={() => setShowConv((v) => !v)}>Conv</button>
-            <button type="button" className={showNc ? "is-active" : ""} onClick={() => setShowNc((v) => !v)}>NC</button>
-            <button type="button" className={showBolivia ? "is-active" : ""} onClick={() => setShowBolivia((v) => !v)}>Bolivia</button>
-            <button type="button" className={showLng ? "is-active" : ""} onClick={() => setShowLng((v) => !v)}>LNG</button>
-            <button type="button" className={showSink ? "is-active" : ""} onClick={() => setShowSink((v) => !v)}>Sink</button>
-            <button type="button" className={showObserved ? "is-active" : ""} onClick={() => setShowObserved((v) => !v)}>Observed</button>
+            <button type="button" className={showSource ? "is-active" : ""} onClick={() => setShowSource((v) => !v)} disabled={!HAS_ANY_NODE_METRICS}>Oferta</button>
+            <button type="button" className={showConv ? "is-active" : ""} onClick={() => setShowConv((v) => !v)} disabled={!HAS_ANY_NODE_METRICS}>Convencional</button>
+            <button type="button" className={showNc ? "is-active" : ""} onClick={() => setShowNc((v) => !v)} disabled={!HAS_ANY_NODE_METRICS}>No convencional</button>
+            <button type="button" className={showBolivia ? "is-active" : ""} onClick={() => setShowBolivia((v) => !v)} disabled={!HAS_ANY_NODE_METRICS}>Bolivia</button>
+            <button type="button" className={showLng ? "is-active" : ""} onClick={() => setShowLng((v) => !v)} disabled={!HAS_ANY_NODE_METRICS}>GNL</button>
+            <button type="button" className={showSink ? "is-active" : ""} onClick={() => setShowSink((v) => !v)} disabled={!HAS_ANY_NODE_METRICS}>Demanda</button>
+            <button type="button" className={showObserved ? "is-active" : ""} onClick={() => setShowObserved((v) => !v)} disabled={!HAS_ANY_NODE_METRICS}>Observado</button>
           </div>
 
           <div className="map-stage">
@@ -565,7 +597,9 @@ export default function App() {
             </svg>
           </div>
           <p className="map-note">
-            Viewer estatico para GitHub Pages. Los datos se exportan desde GCIE, para no duplicar ETL ni scrapers.
+            {hasNodeData
+              ? "Vista estatica para GitHub Pages con datos mensuales de la red y capas nodales activas."
+              : "Las capas nodales estan temporalmente desactivadas porque el snapshot actual no incluye datos de oferta y demanda por nodo."}
           </p>
         </section>
 
@@ -621,6 +655,64 @@ export default function App() {
           </section>
         </aside>
       </main>
+
+      <section className="balance-grid">
+        <section className="detail-card balance-card">
+          <h3>Balance de fuentes y sumideros</h3>
+          <p className="balance-copy">
+            Resumen nodal de {formatMonthLabel(selectedDate, { month: "long", year: "numeric" })}. La oferta y
+            la demanda se expresan como volumen medio diario equivalente.
+          </p>
+          <div className="balance-kpis">
+            <Detail label="Oferta total" value={formatMm(selectedSnapshot.stats.totalSourceProxy)} />
+            <Detail label="Demanda total" value={formatMm(selectedSnapshot.stats.totalSinkProxy)} />
+            <Detail
+              label="Balance neto"
+              value={formatMm(selectedSnapshot.stats.totalSourceProxy - selectedSnapshot.stats.totalSinkProxy)}
+            />
+            <Detail label="Nodos con datos" value={`${selectedSnapshot.nodeMetrics.length}`} />
+          </div>
+          <div className="balance-breakdown">
+            {sourceBreakdown.map((item) => (
+              <div key={item.label} className="balance-segment">
+                <div className="balance-segment-head">
+                  <span className="balance-dot" style={{ background: item.accent }} />
+                  <strong>{item.label}</strong>
+                </div>
+                <span>{formatMm(item.value)}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="detail-card rankings-card">
+          <h3>Nodos principales del mes</h3>
+          <div className="balance-lists">
+            <div>
+              <p className="balance-list-title">Mayores fuentes</p>
+              <ul className="balance-list">
+                {topSources.map((item) => (
+                  <li key={`${item.nodeId}-source`}>
+                    <span>{item.nombre}</span>
+                    <strong>{formatMm(item.sourceProxy)}</strong>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="balance-list-title">Mayores sumideros</p>
+              <ul className="balance-list">
+                {topSinks.map((item) => (
+                  <li key={`${item.nodeId}-sink`}>
+                    <span>{item.nombre}</span>
+                    <strong>{formatMm(item.sinkProxy)}</strong>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+      </section>
     </div>
   );
 }

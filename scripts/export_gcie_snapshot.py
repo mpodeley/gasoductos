@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import math
 from pathlib import Path
+from calendar import monthrange
 from datetime import UTC, datetime
 
 import duckdb
@@ -24,6 +25,17 @@ def _to_record_list(df):
             elif isinstance(value, float) and not math.isfinite(value):
                 record[key] = None
     return records
+
+
+def _month_end_key(value) -> str:
+    if value is None:
+        raise ValueError("fecha nula")
+    if isinstance(value, str):
+        value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    year = value.year
+    month = value.month
+    day = monthrange(year, month)[1]
+    return f"{year:04d}-{month:02d}-{day:02d}"
 
 
 def main() -> None:
@@ -122,12 +134,12 @@ def main() -> None:
     finally:
         con.close()
 
-    available_dates = sorted({row["fecha"][:10] for row in _to_record_list(snapshots_df)})
+    available_dates = sorted({_month_end_key(row["fecha"]) for row in _to_record_list(snapshots_df)})
     route_metrics_by_date: dict[str, list[dict[str, object]]] = {date: [] for date in available_dates}
     node_metrics_by_date: dict[str, list[dict[str, object]]] = {date: [] for date in available_dates}
 
     for row in _to_record_list(snapshots_df):
-        date = row["fecha"][:10]
+        date = _month_end_key(row["fecha"])
         route_metrics_by_date.setdefault(date, []).append(
             {
                 "edgeId": row["edge_id"],
@@ -138,7 +150,7 @@ def main() -> None:
         )
 
     for row in _to_record_list(node_metrics_df):
-        date = row["fecha"][:10]
+        date = _month_end_key(row["fecha"])
         node_metrics_by_date.setdefault(date, []).append(
             {
                 "nodeId": row["node_id"],
