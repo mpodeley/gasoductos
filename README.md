@@ -42,6 +42,15 @@ Generar build de produccion:
 npm run build
 ```
 
+Publicar para GitHub Pages desde `docs/`:
+
+```bash
+npm run build:pages
+rm -rf docs
+cp -a dist docs
+touch docs/.nojekyll
+```
+
 ## Fuente de verdad
 
 Este repo no duplica ETL ni scrapers de `GCIE`.

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node ./node_modules/vite/bin/vite.js",
     "build": "node ./node_modules/typescript/bin/tsc && node ./node_modules/vite/bin/vite.js build",
+    "build:pages": "npm run build",
     "preview": "node ./node_modules/vite/bin/vite.js preview",
     "export:gcie": "/var/home/matias/.venvs/gcie/bin/python scripts/export_gcie_snapshot.py",
     "fetch:enargas": "node scripts/fetch-enargas.mjs",
