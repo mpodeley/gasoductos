@@ -307,18 +307,24 @@ export default function App() {
     [visibleRoutes]
   );
 
-  const maxBubble = useMemo(
-    () => ({
-      source: Math.max(...selectedSnapshot.nodeMetrics.map((item) => item.sourceProxy ?? 0), 1),
-      conv: Math.max(...selectedSnapshot.nodeMetrics.map((item) => item.convSource ?? 0), 1),
-      nc: Math.max(...selectedSnapshot.nodeMetrics.map((item) => item.ncSource ?? 0), 1),
-      bolivia: Math.max(...selectedSnapshot.nodeMetrics.map((item) => item.boliviaSource ?? 0), 1),
-      lng: Math.max(...selectedSnapshot.nodeMetrics.map((item) => item.lngSource ?? 0), 1),
-      sink: Math.max(...selectedSnapshot.nodeMetrics.map((item) => item.sinkProxy ?? 0), 1),
-      observed: Math.max(...selectedSnapshot.nodeMetrics.map((item) => item.observedThroughput ?? 0), 1),
-    }),
-    [selectedSnapshot]
-  );
+  const maxBubble = useMemo(() => {
+    const nodeMetricsAcrossSeries = dataset.snapshots.flatMap((snapshot) => snapshot.nodeMetrics);
+    const sourceSink = Math.max(
+      ...nodeMetricsAcrossSeries.flatMap((item) => [
+        item.sourceProxy ?? 0,
+        item.convSource ?? 0,
+        item.ncSource ?? 0,
+        item.boliviaSource ?? 0,
+        item.lngSource ?? 0,
+        item.sinkProxy ?? 0,
+      ]),
+      1
+    );
+    return {
+      sourceSink,
+      observed: Math.max(...nodeMetricsAcrossSeries.map((item) => item.observedThroughput ?? 0), 1),
+    };
+  }, []);
 
   const highStressCount = useMemo(
     () => datedRoutes.filter((route) => (route.utilization ?? 0) >= 0.8).length,
@@ -538,32 +544,32 @@ export default function App() {
                     }
                     if (showSource && (metric.sourceProxy ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-src`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.sourceProxy, maxBubble.source, 24))} fill="rgba(232,168,56,0.18)" stroke="#e8a838" strokeWidth={normalizeSize(1.4)} />
+                        <circle key={`${node.nodeId}-src`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.sourceProxy, maxBubble.sourceSink, 24))} fill="rgba(232,168,56,0.18)" stroke="#e8a838" strokeWidth={normalizeSize(1.4)} />
                       );
                     }
                     if (showConv && (metric.convSource ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-conv`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.convSource, maxBubble.conv, 18))} fill="rgba(107,142,35,0.10)" stroke="#6b8e23" strokeWidth={normalizeSize(1.1)} />
+                        <circle key={`${node.nodeId}-conv`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.convSource, maxBubble.sourceSink, 24))} fill="rgba(107,142,35,0.10)" stroke="#6b8e23" strokeWidth={normalizeSize(1.1)} />
                       );
                     }
                     if (showNc && (metric.ncSource ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-nc`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.ncSource, maxBubble.nc, 18))} fill="rgba(56,182,232,0.08)" stroke="#38b6e8" strokeWidth={normalizeSize(1.2)} strokeDasharray={normalizeDash([2, 3])} />
+                        <circle key={`${node.nodeId}-nc`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.ncSource, maxBubble.sourceSink, 24))} fill="rgba(56,182,232,0.08)" stroke="#38b6e8" strokeWidth={normalizeSize(1.2)} strokeDasharray={normalizeDash([2, 3])} />
                       );
                     }
                     if (showBolivia && (metric.boliviaSource ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-bol`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.boliviaSource, maxBubble.bolivia, 18))} fill="rgba(240,208,128,0.10)" stroke="#f0d080" strokeWidth={normalizeSize(1.2)} />
+                        <circle key={`${node.nodeId}-bol`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.boliviaSource, maxBubble.sourceSink, 24))} fill="rgba(240,208,128,0.10)" stroke="#f0d080" strokeWidth={normalizeSize(1.2)} />
                       );
                     }
                     if (showLng && (metric.lngSource ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-lng`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.lngSource, maxBubble.lng, 18))} fill="rgba(76,120,168,0.10)" stroke="#4c78a8" strokeWidth={normalizeSize(1.2)} strokeDasharray={normalizeDash([6, 3])} />
+                        <circle key={`${node.nodeId}-lng`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.lngSource, maxBubble.sourceSink, 24))} fill="rgba(76,120,168,0.10)" stroke="#4c78a8" strokeWidth={normalizeSize(1.2)} strokeDasharray={normalizeDash([6, 3])} />
                       );
                     }
                     if (showSink && (metric.sinkProxy ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-sink`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.sinkProxy, maxBubble.sink, 22))} fill="rgba(255,95,135,0.12)" stroke="#ff5f87" strokeWidth={normalizeSize(1.2)} strokeDasharray={normalizeDash([5, 4])} />
+                        <circle key={`${node.nodeId}-sink`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.sinkProxy, maxBubble.sourceSink, 24))} fill="rgba(255,95,135,0.12)" stroke="#ff5f87" strokeWidth={normalizeSize(1.2)} strokeDasharray={normalizeDash([5, 4])} />
                       );
                     }
                     return (
