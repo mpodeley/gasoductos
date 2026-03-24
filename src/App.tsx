@@ -435,6 +435,10 @@ export default function App() {
     return 3 + Math.sqrt(value / maxValue) * boost;
   }
 
+  const zoomScale = transform.scale;
+  const normalizeSize = (value: number) => value / zoomScale;
+  const normalizeDash = (values: number[]) => values.map((value) => normalizeSize(value)).join(" ");
+
   return (
     <div className="app-shell">
       <div className="backdrop" />
@@ -529,37 +533,37 @@ export default function App() {
                     const bubbles = [];
                     if (showObserved && (metric.observedThroughput ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-obs`} cx={node.px} cy={node.py} r={bubbleRadius(metric.observedThroughput, maxBubble.observed, 16)} fill="none" stroke="rgba(228,223,216,0.35)" strokeWidth={1.2} />
+                        <circle key={`${node.nodeId}-obs`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.observedThroughput, maxBubble.observed, 16))} fill="none" stroke="rgba(228,223,216,0.35)" strokeWidth={normalizeSize(1.2)} />
                       );
                     }
                     if (showSource && (metric.sourceProxy ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-src`} cx={node.px} cy={node.py} r={bubbleRadius(metric.sourceProxy, maxBubble.source, 24)} fill="rgba(232,168,56,0.18)" stroke="#e8a838" strokeWidth={1.4} />
+                        <circle key={`${node.nodeId}-src`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.sourceProxy, maxBubble.source, 24))} fill="rgba(232,168,56,0.18)" stroke="#e8a838" strokeWidth={normalizeSize(1.4)} />
                       );
                     }
                     if (showConv && (metric.convSource ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-conv`} cx={node.px} cy={node.py} r={bubbleRadius(metric.convSource, maxBubble.conv, 18)} fill="rgba(107,142,35,0.10)" stroke="#6b8e23" strokeWidth={1.1} />
+                        <circle key={`${node.nodeId}-conv`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.convSource, maxBubble.conv, 18))} fill="rgba(107,142,35,0.10)" stroke="#6b8e23" strokeWidth={normalizeSize(1.1)} />
                       );
                     }
                     if (showNc && (metric.ncSource ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-nc`} cx={node.px} cy={node.py} r={bubbleRadius(metric.ncSource, maxBubble.nc, 18)} fill="rgba(56,182,232,0.08)" stroke="#38b6e8" strokeWidth={1.2} strokeDasharray="2 3" />
+                        <circle key={`${node.nodeId}-nc`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.ncSource, maxBubble.nc, 18))} fill="rgba(56,182,232,0.08)" stroke="#38b6e8" strokeWidth={normalizeSize(1.2)} strokeDasharray={normalizeDash([2, 3])} />
                       );
                     }
                     if (showBolivia && (metric.boliviaSource ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-bol`} cx={node.px} cy={node.py} r={bubbleRadius(metric.boliviaSource, maxBubble.bolivia, 18)} fill="rgba(240,208,128,0.10)" stroke="#f0d080" strokeWidth={1.2} />
+                        <circle key={`${node.nodeId}-bol`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.boliviaSource, maxBubble.bolivia, 18))} fill="rgba(240,208,128,0.10)" stroke="#f0d080" strokeWidth={normalizeSize(1.2)} />
                       );
                     }
                     if (showLng && (metric.lngSource ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-lng`} cx={node.px} cy={node.py} r={bubbleRadius(metric.lngSource, maxBubble.lng, 18)} fill="rgba(76,120,168,0.10)" stroke="#4c78a8" strokeWidth={1.2} strokeDasharray="6 3" />
+                        <circle key={`${node.nodeId}-lng`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.lngSource, maxBubble.lng, 18))} fill="rgba(76,120,168,0.10)" stroke="#4c78a8" strokeWidth={normalizeSize(1.2)} strokeDasharray={normalizeDash([6, 3])} />
                       );
                     }
                     if (showSink && (metric.sinkProxy ?? 0) > 0) {
                       bubbles.push(
-                        <circle key={`${node.nodeId}-sink`} cx={node.px} cy={node.py} r={bubbleRadius(metric.sinkProxy, maxBubble.sink, 22)} fill="rgba(255,95,135,0.12)" stroke="#ff5f87" strokeWidth={1.2} strokeDasharray="5 4" />
+                        <circle key={`${node.nodeId}-sink`} cx={node.px} cy={node.py} r={normalizeSize(bubbleRadius(metric.sinkProxy, maxBubble.sink, 22))} fill="rgba(255,95,135,0.12)" stroke="#ff5f87" strokeWidth={normalizeSize(1.2)} strokeDasharray={normalizeDash([5, 4])} />
                       );
                     }
                     return (
@@ -577,7 +581,7 @@ export default function App() {
                         x2={route.end.px}
                         y2={route.end.py}
                         stroke={utilizationColor(route.utilization)}
-                        strokeWidth={route.strokeWidth}
+                        strokeWidth={normalizeSize(route.strokeWidth)}
                         strokeLinecap="round"
                         opacity={selectedRoute && selectedRoute.edgeId !== route.edgeId ? 0.14 : 0.9}
                       />
@@ -586,8 +590,8 @@ export default function App() {
 
                   {visibleNodes.map((node) => (
                     <g key={node.nodeId} className="node-group" onClick={(event) => { event.stopPropagation(); setSelectedNodeId(node.nodeId); setSelectedRouteId(null); }}>
-                      <circle cx={node.px} cy={node.py} r={node.hasCompressor ? 4.2 : 3.4} className="node-dot" />
-                      <text x={node.px + 6} y={node.py - 6} className="node-label" style={{ fontSize: `${9 / transform.scale}px` }}>
+                      <circle cx={node.px} cy={node.py} r={normalizeSize(node.hasCompressor ? 4.2 : 3.4)} className="node-dot" />
+                      <text x={node.px + normalizeSize(6)} y={node.py - normalizeSize(6)} className="node-label" style={{ fontSize: `${normalizeSize(9)}px` }}>
                         {node.nombre}
                       </text>
                     </g>
